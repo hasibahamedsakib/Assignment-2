@@ -1,5 +1,7 @@
 import mongoose, { Schema } from 'mongoose'
+import bcrypt from 'bcrypt'
 import TUser, { TAddress, TFullName } from './user.interface'
+import config from '../../config'
 
 const fullNameSchema = new Schema<TFullName>({
   firstName: {
@@ -79,6 +81,13 @@ const userSchema = new Schema<TUser>({
 
 // disable the version key.
 userSchema.set('versionKey', false)
+
+// hashing password
+userSchema.pre('save', async function () {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this
+  user.password = await bcrypt.hash(user.password, Number(config.salt_rounds))
+})
 
 // create and export User model.
 export const User = mongoose.model('User', userSchema)
