@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose'
 import bcrypt from 'bcrypt'
-import TUser, { TAddress, TFullName } from './user.interface'
+import TUser, { TAddress, TFullName, UserModel } from './user.interface'
 import config from '../../config'
 
 const fullNameSchema = new Schema<TFullName>({
@@ -35,10 +35,10 @@ const addressSchema = new Schema<TAddress>({
 // disable the _id filed
 addressSchema.set('_id', false)
 
-const userSchema = new Schema<TUser>({
+const userSchema = new Schema<TUser, UserModel>({
   userId: {
     type: Number,
-    unique: [true, 'User ID is must be Unique'],
+    // unique: [true, 'User ID is must be Unique'],
     trim: true,
     required: [true, `{VALUE} is required`],
   },
@@ -61,7 +61,7 @@ const userSchema = new Schema<TUser>({
   },
   email: {
     type: String,
-    unique: [true, 'Email must be unique'],
+    // unique: [true, 'Email must be unique'],
     required: [true, `{VALUE} is required`],
   },
   isActive: {
@@ -89,5 +89,16 @@ userSchema.pre('save', async function () {
   user.password = await bcrypt.hash(user.password, Number(config.salt_rounds))
 })
 
+// creating a static method by userId
+userSchema.statics.isUserExists = async function (userId: number) {
+  const existingUser = await User.findOne({ userId })
+  return existingUser
+}
+// creating a static method by email
+userSchema.statics.isUserExistsEmail = async function (email: string) {
+  const existingEmailUser = await User.findOne({ email })
+  return existingEmailUser
+}
+
 // create and export User model.
-export const User = mongoose.model('User', userSchema)
+export const User = mongoose.model<TUser, UserModel>('User', userSchema)

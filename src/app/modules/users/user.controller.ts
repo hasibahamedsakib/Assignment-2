@@ -30,9 +30,9 @@ const createUserController = async (req: Request, res: Response) => {
 const getUsersController = async (req: Request, res: Response) => {
   try {
     const result = await findUsersIntoDB()
-    res.status(201).json({
+    res.status(200).json({
       success: true,
-      message: 'Users fetched successfully! !',
+      message: 'Users fetched successfully !',
       data: result,
     })
   } catch (error: any) {
@@ -47,9 +47,9 @@ const getSingleUserController = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId
     const result = await findSingleUserIntoDB(userId)
-    res.status(201).json({
+    res.status(200).json({
       success: true,
-      message: 'Users fetched successfully! !',
+      message: 'Users fetched successfully !',
       data: result,
     })
   } catch (error: any) {
