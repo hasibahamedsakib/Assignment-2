@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import {
   createUserIntoDB,
+  deleteUserIntoDB,
   findSingleUserIntoDB,
   findUsersIntoDB,
   updateUserIntoDB,
@@ -101,9 +102,34 @@ const updateUserController = async (req: Request, res: Response) => {
   }
 }
 
+// Delete A User
+const deleteUserController = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.userId
+
+    const result = await deleteUserIntoDB(userId)
+    res.status(200).json({
+      success: true,
+      message: 'Users delete successfully !',
+      data: result,
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+  } catch (error: any) {
+    res.status(404).json({
+      success: false,
+      message: 'can not deleted user',
+      error: {
+        code: 404,
+        description: error.message,
+      },
+    })
+  }
+}
+
 export {
   createUserController,
   getUsersController,
   getSingleUserController,
   updateUserController,
+  deleteUserController,
 }

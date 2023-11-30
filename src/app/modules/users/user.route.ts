@@ -3,6 +3,7 @@ const router = express.Router()
 // importing all controllers
 import {
   createUserController,
+  deleteUserController,
   getSingleUserController,
   getUsersController,
   updateUserController,
@@ -19,5 +20,8 @@ router.get('/:userId', getSingleUserController)
 
 // Update single student by userId
 router.put('/:userId', updateUserController)
+
+// Delete single student by userId
+router.delete('/:userId', deleteUserController)
 
 export const userRoute = router

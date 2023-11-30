@@ -1,3 +1,4 @@
+import mongoose from 'mongoose'
 import TUser from './user.interface'
 import { User } from './user.model'
 
@@ -41,14 +42,35 @@ const findSingleUserIntoDB = async (userId: string) => {
 
 // update  user service
 const updateUserIntoDB = async (userId: string, updateUserData: TUser) => {
+  const mongooseUserId = new mongoose.Types.ObjectId(parseInt(userId))
+
   const user = await User.findOne({ userId })
 
   if (!user) {
     throw new Error('Can Not Find User.')
   }
   user.set(updateUserData)
-  const updateUser = await user.save()
+  const updateUser = await User.findByIdAndUpdate(
+    { _id: mongooseUserId },
+    { updateUserData },
+    {
+      new: true,
+      // upsert: true,
+      // returnOriginal: false,
+    },
+  )
   return updateUser
+}
+
+// delete user service
+const deleteUserIntoDB = async (userId: string) => {
+  const user = await User.findOne({ userId }).select('-password')
+  if (!user) {
+    throw new Error('Can Not Find User.')
+  } else {
+    const result = await User.deleteOne({ userId })
+    return result
+  }
 }
 
 export {
@@ -56,4 +78,5 @@ export {
   findUsersIntoDB,
   findSingleUserIntoDB,
   updateUserIntoDB,
+  deleteUserIntoDB,
 }
