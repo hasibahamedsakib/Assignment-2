@@ -1,6 +1,7 @@
 import TUser from './user.interface'
 import { User } from './user.model'
 
+// create user service
 const createUserIntoDB = async (user: TUser) => {
   if (
     (await User.isUserExists(user.userId)) ||
@@ -12,6 +13,7 @@ const createUserIntoDB = async (user: TUser) => {
   return createUser
 }
 
+// find all users service
 const findUsersIntoDB = async () => {
   const allUsers = await User.find(
     {},
@@ -26,9 +28,32 @@ const findUsersIntoDB = async () => {
   ).select('-password')
   return allUsers
 }
+
+// find single user service
 const findSingleUserIntoDB = async (userId: string) => {
-  const allUsers = await User.findOne({ userId }).select('-password')
-  return allUsers
+  const user = await User.findOne({ userId }).select('-password')
+  if (user) {
+    return user
+  } else {
+    throw new Error('Can Not Find User.')
+  }
 }
 
-export { createUserIntoDB, findUsersIntoDB, findSingleUserIntoDB }
+// update  user service
+const updateUserIntoDB = async (userId: string, updateUserData: TUser) => {
+  const user = await User.findOne({ userId })
+
+  if (!user) {
+    throw new Error('Can Not Find User.')
+  }
+  user.set(updateUserData)
+  const updateUser = await user.save()
+  return updateUser
+}
+
+export {
+  createUserIntoDB,
+  findUsersIntoDB,
+  findSingleUserIntoDB,
+  updateUserIntoDB,
+}

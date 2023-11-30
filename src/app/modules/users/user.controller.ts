@@ -3,7 +3,10 @@ import {
   createUserIntoDB,
   findSingleUserIntoDB,
   findUsersIntoDB,
+  updateUserIntoDB,
 } from './user.service'
+
+// Creating User
 const createUserController = async (req: Request, res: Response) => {
   try {
     const user = req.body
@@ -32,6 +35,7 @@ const createUserController = async (req: Request, res: Response) => {
   }
 }
 
+// Find All Users
 const getUsersController = async (req: Request, res: Response) => {
   try {
     const result = await findUsersIntoDB()
@@ -49,6 +53,8 @@ const getUsersController = async (req: Request, res: Response) => {
     })
   }
 }
+
+// Find Single User.
 const getSingleUserController = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId
@@ -60,12 +66,44 @@ const getSingleUserController = async (req: Request, res: Response) => {
     })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
   } catch (error: any) {
-    res.status(400).json({
-      status: false,
-      message: 'something went wrong',
-      error: error.message,
+    res.status(404).json({
+      success: false,
+      message: 'User not found',
+      error: {
+        code: 404,
+        description: error.message,
+      },
     })
   }
 }
 
-export { createUserController, getUsersController, getSingleUserController }
+// Update A User
+const updateUserController = async (req: Request, res: Response) => {
+  try {
+    const userId = req.params.userId
+    const updateUserData = req.body
+    const result = await updateUserIntoDB(userId, updateUserData)
+    res.status(200).json({
+      success: true,
+      message: 'Users Updated successfully !',
+      data: result,
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+  } catch (error: any) {
+    res.status(404).json({
+      success: false,
+      message: 'Can Not Update',
+      error: {
+        code: 404,
+        description: error.message,
+      },
+    })
+  }
+}
+
+export {
+  createUserController,
+  getUsersController,
+  getSingleUserController,
+  updateUserController,
+}
