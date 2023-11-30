@@ -10,19 +10,24 @@ const createUserController = async (req: Request, res: Response) => {
     const result = await createUserIntoDB(user)
 
     //   making object for result
-    const withoutResult = result.toObject()
-    delete withoutResult.password
+    const makeResultObj = result.toObject()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...resultWithoutPass } = makeResultObj
 
     res.status(201).json({
       success: true,
       message: 'User created successfully!',
-      data: withoutResult,
+      data: resultWithoutPass,
     })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
   } catch (error: any) {
     res.status(400).json({
-      status: false,
+      success: false,
       message: 'something went wrong',
-      error: error.message,
+      error: {
+        code: 400,
+        description: error.message,
+      },
     })
   }
 }
@@ -35,6 +40,7 @@ const getUsersController = async (req: Request, res: Response) => {
       message: 'Users fetched successfully !',
       data: result,
     })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
   } catch (error: any) {
     res.status(400).json({
       status: false,
@@ -52,6 +58,7 @@ const getSingleUserController = async (req: Request, res: Response) => {
       message: 'Users fetched successfully !',
       data: result,
     })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
   } catch (error: any) {
     res.status(400).json({
       status: false,

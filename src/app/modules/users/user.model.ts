@@ -40,6 +40,7 @@ const userSchema = new Schema<TUser, UserModel>({
     type: Number,
     // unique: [true, 'User ID is must be Unique'],
     trim: true,
+    minlength: 10,
     required: [true, `{VALUE} is required`],
   },
   username: {

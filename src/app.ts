@@ -30,13 +30,14 @@ app.use((req: Request, res: Response, next) => {
 })
 
 // handling server error
-app.use((error, req: Request, res: Response, next) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+app.use((error: any, req: Request, res: Response, next: any) => {
   res.status(500).json({
     success: false,
     message: 'Something went wrong',
     error: {
       code: 500,
-      description: 'Internally Server Error',
+      description: error.message,
     },
   })
 })
