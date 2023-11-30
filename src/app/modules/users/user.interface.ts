@@ -11,13 +11,11 @@ export type TAddress = {
   country: string
 }
 
-export type TOrders = [
-  {
-    productName: string
-    price: number
-    quantity: number
-  },
-]
+export type TOrders = {
+  productName: string
+  price: number
+  quantity: number
+}
 
 export type TUser = {
   //   userId: number | { type: number; unique: boolean[]; trim: boolean }
@@ -31,12 +29,17 @@ export type TUser = {
   isActive: boolean
   hobbies: string[]
   address: TAddress
-  orders: TOrders
+  orders: [TOrders]
 }
 
 // create and export userExisting model
 export interface UserModel extends Model<TUser> {
   isUserExists(userId: number): Promise<TUser | null>
+}
+
+// create and export userExisting model
+export interface UserModel extends Model<TUser> {
+  isUserExistsEmail(userId: string): Promise<TUser | null>
 }
 // create and export userExisting model
 export interface UserModel extends Model<TUser> {

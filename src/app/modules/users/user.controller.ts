@@ -16,7 +16,7 @@ const createUserController = async (req: Request, res: Response) => {
     //   making object for result
     const makeResultObj = result.toObject()
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...resultWithoutPass } = makeResultObj
+    const { password, orders, ...resultWithoutPass } = makeResultObj
 
     res.status(201).json({
       success: true,
@@ -83,11 +83,17 @@ const updateUserController = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId
     const updateUserData = req.body
-    const result = await updateUserIntoDB(userId, updateUserData)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any,
+    const result: any = await updateUserIntoDB(userId, updateUserData)
+
+    //   making object for result
+    const makeResultObj = result.toObject()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, orders, ...resultWithoutPass } = makeResultObj
     res.status(200).json({
       success: true,
       message: 'Users Updated successfully !',
-      data: result,
+      data: resultWithoutPass,
     })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
   } catch (error: any) {
@@ -108,11 +114,23 @@ const deleteUserController = async (req: Request, res: Response) => {
     const userId = req.params.userId
 
     const result = await deleteUserIntoDB(userId)
-    res.status(200).json({
-      success: true,
-      message: 'Users delete successfully !',
-      data: result,
-    })
+
+    if (result.deletedCount > 0) {
+      res.status(200).json({
+        success: true,
+        message: 'User deleted successfully!',
+        data: null,
+      })
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'can not deleted user',
+        error: {
+          code: 404,
+          description: 'deleted incomplete',
+        },
+      })
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
   } catch (error: any) {
     res.status(404).json({

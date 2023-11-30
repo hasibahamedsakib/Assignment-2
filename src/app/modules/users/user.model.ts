@@ -1,6 +1,11 @@
 import mongoose, { Schema } from 'mongoose'
 import bcrypt from 'bcrypt'
-import TUser, { TAddress, TFullName, UserModel } from './user.interface'
+import TUser, {
+  TAddress,
+  TFullName,
+  TOrders,
+  UserModel,
+} from './user.interface'
 import config from '../../config'
 
 const fullNameSchema = new Schema<TFullName>({
@@ -34,6 +39,24 @@ const addressSchema = new Schema<TAddress>({
 })
 // disable the _id filed
 addressSchema.set('_id', false)
+
+// orders schema
+const ordersSchema = new Schema<TOrders>({
+  productName: {
+    type: String,
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+  quantity: {
+    type: Number,
+    required: [true, `{VALUE} is required`],
+  },
+})
+// disable the _id filed
+ordersSchema.set('_id', false)
 
 const userSchema = new Schema<TUser, UserModel>({
   userId: {
@@ -77,6 +100,9 @@ const userSchema = new Schema<TUser, UserModel>({
   address: {
     type: addressSchema,
     required: [true, `{VALUE} is required`],
+  },
+  orders: {
+    type: [ordersSchema],
   },
 })
 

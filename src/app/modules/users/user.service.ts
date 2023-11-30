@@ -1,4 +1,3 @@
-import mongoose from 'mongoose'
 import TUser from './user.interface'
 import { User } from './user.model'
 
@@ -26,13 +25,18 @@ const findUsersIntoDB = async () => {
       address: 1,
       _id: 0,
     },
-  ).select('-password')
+  )
+    .select('-password')
+    .select('-orders')
+
   return allUsers
 }
 
 // find single user service
 const findSingleUserIntoDB = async (userId: string) => {
-  const user = await User.findOne({ userId }).select('-password')
+  const user = await User.findOne({ userId })
+    .select('-password')
+    .select('-orders')
   if (user) {
     return user
   } else {
@@ -42,31 +46,29 @@ const findSingleUserIntoDB = async (userId: string) => {
 
 // update  user service
 const updateUserIntoDB = async (userId: string, updateUserData: TUser) => {
-  const mongooseUserId = new mongoose.Types.ObjectId(parseInt(userId))
-
-  const user = await User.findOne({ userId })
-
-  if (!user) {
-    throw new Error('Can Not Find User.')
+  if (!(await User.isUserExists(Number(userId)))) {
+    throw new Error('User not found!')
+  } else {
+    try {
+      const updateUser = await User.findOneAndUpdate(
+        { userId },
+        updateUserData,
+        {
+          new: true,
+        },
+      )
+      return updateUser
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      throw new Error(error.message)
+    }
   }
-  user.set(updateUserData)
-  const updateUser = await User.findByIdAndUpdate(
-    { _id: mongooseUserId },
-    { updateUserData },
-    {
-      new: true,
-      // upsert: true,
-      // returnOriginal: false,
-    },
-  )
-  return updateUser
 }
 
 // delete user service
 const deleteUserIntoDB = async (userId: string) => {
-  const user = await User.findOne({ userId }).select('-password')
-  if (!user) {
-    throw new Error('Can Not Find User.')
+  if (!(await User.isUserExists(Number(userId)))) {
+    throw new Error('User not found!')
   } else {
     const result = await User.deleteOne({ userId })
     return result

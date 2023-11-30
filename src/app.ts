@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express'
 import cors from 'cors'
 import { userRoute } from './app/modules/users/user.route'
+import { orderRoute } from './app/modules/orders/order.route'
 
 const app = express()
 
@@ -10,6 +11,9 @@ app.use(cors())
 
 // using userRoute
 app.use('/api/users', userRoute)
+
+// using orderRoute
+app.use('/api/users', orderRoute)
 
 // home route
 app.get('/', (req: Request, res: Response) => {
