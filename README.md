@@ -16,7 +16,7 @@ This project is a Node.js Express application developed in TypeScript, utilizing
 
 #### Step-3
 
-create a `.env` file and add `PORT='5000'` number and add a mongoDB database url name is `DB_URL='db-url'` in root file.
+create a `.env` file and add `PORT=port number` number and add a mongoDB database url name is `DB_URL='db-url'` in root file.
 
 #### Step-4
 
