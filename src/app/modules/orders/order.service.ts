@@ -2,6 +2,7 @@
 import { TOrders } from '../users/user.interface'
 import { User } from '../users/user.model'
 
+// pushing new order on the order array
 const newOrderIntoDB = async (userId: string, orderData: TOrders) => {
   if (!(await User.isUserExists(Number(userId)))) {
     throw new Error('User not found!')
@@ -21,6 +22,7 @@ const newOrderIntoDB = async (userId: string, orderData: TOrders) => {
   }
 }
 
+// get orders by specific user
 const getOrdersIntoDB = async (userId: string) => {
   if (!(await User.isUserExists(Number(userId)))) {
     throw new Error('User not found!')
@@ -30,7 +32,7 @@ const getOrdersIntoDB = async (userId: string) => {
   }
 }
 
-//
+// calculate all the price => totalPrice = price * quantity
 const getTotalOrderPriceIntoDB = async (userId: string) => {
   if (!(await User.isUserExists(Number(userId)))) {
     throw new Error('User not found!')

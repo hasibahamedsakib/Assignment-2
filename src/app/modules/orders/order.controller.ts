@@ -6,6 +6,7 @@ import {
   newOrderIntoDB,
 } from './order.service'
 
+// create new order
 const newOrderController = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId
@@ -28,6 +29,7 @@ const newOrderController = async (req: Request, res: Response) => {
   }
 }
 
+// get orders by specific user
 const getOrdersController = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId
@@ -52,6 +54,7 @@ const getOrdersController = async (req: Request, res: Response) => {
   }
 }
 
+// calculate all the price => totalPrice = price * quantity
 const totalPriceOfOrderController = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId
@@ -59,7 +62,9 @@ const totalPriceOfOrderController = async (req: Request, res: Response) => {
     res.status(200).json({
       success: true,
       message: 'Total price calculated successfully!',
-      data: result,
+      data: {
+        totalPrice: result,
+      },
     })
   } catch (error: any) {
     res.status(404).json({
