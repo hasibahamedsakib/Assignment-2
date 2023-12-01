@@ -58,10 +58,9 @@ const ordersSchema = new Schema<TOrders>({
 // disable the _id filed
 ordersSchema.set('_id', false)
 
-const userSchema = new Schema<TUser, UserModel>({
+export const userSchema = new Schema<TUser, UserModel>({
   userId: {
     type: Number,
-    // unique: [true, 'User ID is must be Unique'],
     trim: true,
     minlength: 10,
     required: [true, `{VALUE} is required`],
@@ -85,7 +84,7 @@ const userSchema = new Schema<TUser, UserModel>({
   },
   email: {
     type: String,
-    // unique: [true, 'Email must be unique'],
+
     required: [true, `{VALUE} is required`],
   },
   isActive: {

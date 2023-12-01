@@ -36,7 +36,7 @@ const getOrdersController = async (req: Request, res: Response) => {
     if (orders) {
       res.status(200).json({
         success: true,
-        message: 'Order created successfully!',
+        message: 'Order fetched successfully!',
         data: orders,
       })
     }

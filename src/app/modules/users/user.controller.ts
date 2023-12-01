@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from 'express'
 import {
   createUserIntoDB,
@@ -6,16 +8,18 @@ import {
   findUsersIntoDB,
   updateUserIntoDB,
 } from './user.service'
+import UserValidationSchema from './user.validation'
 
 // Creating User
 const createUserController = async (req: Request, res: Response) => {
   try {
-    const user = req.body
-    const result = await createUserIntoDB(user)
+    const userData = req.body
+    const zodParseData = UserValidationSchema.parse(userData)
+    const result = await createUserIntoDB(zodParseData)
 
     //   making object for result
     const makeResultObj = result.toObject()
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     const { password, orders, ...resultWithoutPass } = makeResultObj
 
     res.status(201).json({
@@ -23,14 +27,14 @@ const createUserController = async (req: Request, res: Response) => {
       message: 'User created successfully!',
       data: resultWithoutPass,
     })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
   } catch (error: any) {
     res.status(400).json({
       success: false,
       message: 'something went wrong',
       error: {
         code: 400,
-        description: error.message,
+        description:
+          error.message == 'User already exists' ? error.message : error,
       },
     })
   }
@@ -45,7 +49,6 @@ const getUsersController = async (req: Request, res: Response) => {
       message: 'Users fetched successfully !',
       data: result,
     })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
   } catch (error: any) {
     res.status(400).json({
       status: false,
@@ -65,7 +68,6 @@ const getSingleUserController = async (req: Request, res: Response) => {
       message: 'Users fetched successfully !',
       data: result,
     })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
   } catch (error: any) {
     res.status(404).json({
       success: false,
@@ -83,19 +85,18 @@ const updateUserController = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId
     const updateUserData = req.body
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any,
+
     const result: any = await updateUserIntoDB(userId, updateUserData)
 
     //   making object for result
     const makeResultObj = result.toObject()
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     const { password, orders, ...resultWithoutPass } = makeResultObj
     res.status(200).json({
       success: true,
       message: 'Users Updated successfully !',
       data: resultWithoutPass,
     })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
   } catch (error: any) {
     res.status(404).json({
       success: false,
@@ -131,7 +132,6 @@ const deleteUserController = async (req: Request, res: Response) => {
         },
       })
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
   } catch (error: any) {
     res.status(404).json({
       success: false,
