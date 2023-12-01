@@ -17,7 +17,7 @@ app.use('/api/users', orderRoute)
 
 // home route
 app.get('/', (req: Request, res: Response) => {
-  res.send('This is home page.')
+  res.send('<h1><i>welcome to server</i></h1>')
 })
 
 // handling client error
